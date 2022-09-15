@@ -101,7 +101,7 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
   await user.save({ validateBeforeSave: false });
 
   //Send email to user's email
-  const resetUrl = `http://localhost:3000/reset-password/${resetToken}`;
+  const resetUrl = `https://chatapp-47da7.web.app/reset-password/${resetToken}`;
 
   const message = `Forgot your password\nSubmit a PATCH request with your new password and password confirm to: ${resetUrl}\nIf you don't want to forget your password, please ignore this email!`;
 
