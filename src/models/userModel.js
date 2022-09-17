@@ -2,7 +2,6 @@ const mongoose = require("mongoose");
 const validator = require("validator");
 const bcrypt = require("bcryptjs");
 const crypto = require("crypto");
-const { stringify } = require("querystring");
 
 const UserSchema = mongoose.Schema(
   {
@@ -95,11 +94,6 @@ UserSchema.pre("save", async function (next) {
 
   next();
 });
-
-// UserSchema.pre(/^find/, function (next) {
-//   this.select("-password -createdAt -__v -email -passwordCreatedAt");
-//   next();
-// });
 
 UserSchema.pre("save", function (next) {
   if (!this.isModified("password") || this.isNew) return next();

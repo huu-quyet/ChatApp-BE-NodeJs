@@ -12,13 +12,6 @@ const MessageSchema = mongoose.Schema(
     },
     path: {
       type: String,
-      // validate: {
-      //   validator: function (el) {
-      //     return (this.type === "img" || this.type === "video" || this.link === "link" || this.type === "icon") && el;
-      //   },
-
-      //   message: "This text is not allow type message",
-      // },
     },
     sender: {
       type: {

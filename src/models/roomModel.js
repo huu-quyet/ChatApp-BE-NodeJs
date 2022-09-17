@@ -22,7 +22,6 @@ const RoomSchema = mongoose.Schema(
     lastMessage: {
       type: mongoose.Schema.ObjectId,
       ref: "Message",
-      // require: [true, "Room required a last message"],
     },
     unRead: {
       type: [String],

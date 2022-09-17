@@ -152,7 +152,6 @@ const socket = ({ io }) => {
       const messages = await Message.find({ receiver: param.roomId }).sort("-sendedAt").skip(param.skip).limit(30);
 
       messages.sort((a, b) => +new Date(a.sendedAt) - +new Date(b.sendedAt));
-      console.log(param);
       callback(messages);
     });
 
