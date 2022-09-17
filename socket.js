@@ -92,7 +92,7 @@ const socket = ({ io }) => {
 
         const userOnlineExisted = onlineUsers?.findIndex((item) => item.socketId === socketId);
 
-        if (userOnlineExisted != -1) {
+        if (userOnlineExisted !== -1) {
           onlineUsers[userOnlineExisted] = {
             userId: onlineUsers[userOnlineExisted].userId,
             socketId: socketId,
@@ -157,9 +157,19 @@ const socket = ({ io }) => {
     });
 
     // Event leave room
-    socket.on(EVENTS.CLIENT.LEAVE_ROOM, async (roomId) => {
+    socket.on(EVENTS.CLIENT.LEAVE_ROOM, async (roomId, socketId) => {
       if (roomId) {
         socket.leave(roomId);
+
+        const userOnlineExisted = onlineUsers?.findIndex((item) => item.socketId === socketId);
+
+        if (userOnlineExisted !== -1) {
+          onlineUsers[userOnlineExisted] = {
+            userId: onlineUsers[userOnlineExisted].userId,
+            socketId: socketId,
+            room: null,
+          };
+        }
       }
     });
 

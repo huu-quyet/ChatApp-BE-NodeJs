@@ -32,6 +32,7 @@ const RoomSchema = mongoose.Schema(
   {
     toJSON: { virtuals: true },
     toObject: { virtuals: true },
+    versionKey: false,
   }
 );
 

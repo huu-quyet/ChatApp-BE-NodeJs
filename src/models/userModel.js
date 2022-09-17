@@ -4,80 +4,83 @@ const bcrypt = require("bcryptjs");
 const crypto = require("crypto");
 const { stringify } = require("querystring");
 
-const UserSchema = mongoose.Schema({
-  firstName: {
-    type: String,
-    select: true,
-  },
-  lastName: {
-    type: String,
-    select: true,
-  },
-  birthday: {
-    type: Date,
-    select: true,
-  },
-  userName: {
-    type: String,
-    unique: true,
-    require: [true, "Please provide us your user name"],
-  },
-  avatar: String,
-  email: {
-    type: String,
-    require: [true, "Please provide us your email"],
-    unique: true,
-    lowerCase: true,
-    validator: [validator.email, "Please provide a valid email"],
-  },
-  phone: {
-    type: String,
-  },
-  friends: {
-    type: [String],
-    default: [],
-  },
-  createdAt: {
-    type: Date,
-    default: Date.now(),
-  },
-  password: {
-    type: String,
-    require: [true, "Please provide a password"],
-    minlength: 8,
-    select: true,
-  },
-  passwordConfirm: {
-    type: String,
-    require: [true, "Please confirm your password"],
-    validate: {
-      validator: function (el) {
-        return el === this.password;
-      },
-      message: "Password are not the same",
+const UserSchema = mongoose.Schema(
+  {
+    firstName: {
+      type: String,
+      select: true,
     },
+    lastName: {
+      type: String,
+      select: true,
+    },
+    birthday: {
+      type: Date,
+      select: true,
+    },
+    userName: {
+      type: String,
+      unique: true,
+      require: [true, "Please provide us your user name"],
+    },
+    avatar: String,
+    email: {
+      type: String,
+      require: [true, "Please provide us your email"],
+      unique: true,
+      lowerCase: true,
+      validator: [validator.email, "Please provide a valid email"],
+    },
+    phone: {
+      type: String,
+    },
+    friends: {
+      type: [String],
+      default: [],
+    },
+    createdAt: {
+      type: Date,
+      default: Date.now(),
+    },
+    password: {
+      type: String,
+      require: [true, "Please provide a password"],
+      minlength: 8,
+      select: true,
+    },
+    passwordConfirm: {
+      type: String,
+      require: [true, "Please confirm your password"],
+      validate: {
+        validator: function (el) {
+          return el === this.password;
+        },
+        message: "Password are not the same",
+      },
+    },
+    active: {
+      type: Boolean,
+      default: false,
+    },
+    online: {
+      type: Boolean,
+      default: false,
+    },
+    waitingApproval: {
+      type: [String],
+      default: [],
+    },
+    sendedRequire: {
+      type: [String],
+      default: [],
+    },
+    lastTimeOnline: Date,
+    passwordCreatedAt: Date,
+    passwordResetToken: String,
+    passwordResetExpires: Date,
   },
-  active: {
-    type: Boolean,
-    default: false,
-  },
-  online: {
-    type: Boolean,
-    default: false,
-  },
-  waitingApproval: {
-    type: [String],
-    default: [],
-  },
-  sendedRequire: {
-    type: [String],
-    default: [],
-  },
-  lastTimeOnline: Date,
-  passwordCreatedAt: Date,
-  passwordResetToken: String,
-  passwordResetExpires: Date,
-});
+  { versionKey: false }
+);
 
 // Encrypt password
 UserSchema.pre("save", async function (next) {
