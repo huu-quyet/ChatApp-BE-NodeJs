@@ -54,14 +54,13 @@ exports.getAllRoomByUserId = catchAsync(async (req, res, next) => {
     .select("-message");
 
   if (!rooms) return res.status(404).json({ status: "fail", message: "Room not found" });
+
   let sortRooms = [];
+
   if (rooms) {
-    sortRooms = rooms
-      ?.filter((item) => (item?.userId?.find((user) => user._id.toString() === req.user.id) ? true : false))
-      .sort((a, b) => {
-        if (!a?.lastMessage || !b?.lastMessage) return 1;
-        return +new Date(a.lastMessage.sendedAt) > +new Date(b.lastMessage.sendedAt) ? -1 : 1;
-      });
+    sortRooms = rooms?.filter((item) =>
+      item?.userId?.find((user) => user._id.toString() === req.user.id) ? true : false
+    );
   }
 
   res.status(200).json({ status: "success", rooms: sortRooms });

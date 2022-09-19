@@ -100,7 +100,15 @@ const socket = ({ io }) => {
           };
         }
 
-        const messages = await Message.find({ receiver: roomId }).sort("-sendedAt").skip(0).limit(30);
+        const messages = await Message.find({ receiver: roomId })
+          .populate({
+            path: "sender",
+            select:
+              "-_v -password -email -createdAt -friends -lastName -firstName -passwordCreatedAt -sendedRequire -waitingApproval -active",
+          })
+          .sort("-sendedAt")
+          .skip(0)
+          .limit(30);
 
         messages.sort((a, b) => +new Date(a.sendedAt) - +new Date(b.sendedAt));
 
@@ -121,11 +129,10 @@ const socket = ({ io }) => {
         const room = await Room.findById({ _id: mes.receiver }).populate({
           path: "userId",
           select:
-            "-_v -password -email -createdAt -friends -lastName -firstName -passwordCreatedAt -sendedRequire -waitingApproval -active",
+            "-__v -password -email -createdAt -friends -lastName -firstName -passwordCreatedAt -sendedRequire -waitingApproval -active",
         });
         const newMessageId = [...room.message, newMes._id];
         room.message = newMessageId;
-        room.lastMessage = newMes;
 
         const onlineMembers = onlineUsers.filter((user) => room?.userId?.find((u) => u._id.toString() === user.userId));
 
@@ -136,21 +143,36 @@ const socket = ({ io }) => {
         });
 
         room.unRead = userUnReadMes;
+        room.updatedAt = Date.now();
+
+        const newMessInfo = await Message.findById({ _id: newMes._id }).populate({
+          path: "sender",
+          select:
+            "-__v -password -email -createdAt -friends -lastName -firstName -passwordCreatedAt -sendedRequire -waitingApproval -active",
+        });
+        room.lastMessage = newMessInfo;
 
         await room.save();
 
-        callback({ room, newMes });
+        callback({ room, newMessInfo });
 
         onlineMembers.forEach((user) => {
-          socket.to(`${user.socketId}`).emit(EVENTS.SERVER.ROOM_MESSAGE, room, newMes);
+          socket.to(`${user.socketId}`).emit(EVENTS.SERVER.ROOM_MESSAGE, room, newMessInfo);
         });
       }
     });
 
     // Event load more message
     socket.on(EVENTS.CLIENT.LOAD_MORE_MESSAGE, async (param, callback) => {
-      const messages = await Message.find({ receiver: param.roomId }).sort("-sendedAt").skip(param.skip).limit(30);
-
+      const messages = await Message.find({ receiver: param.roomId })
+        .populate({
+          path: "sender",
+          select:
+            "-_v -password -email -createdAt -friends -lastName -firstName -passwordCreatedAt -sendedRequire -waitingApproval -active",
+        })
+        .sort("-sendedAt")
+        .skip(param.skip)
+        .limit(30);
       messages.sort((a, b) => +new Date(a.sendedAt) - +new Date(b.sendedAt));
       callback(messages);
     });

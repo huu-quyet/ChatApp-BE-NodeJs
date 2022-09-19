@@ -27,6 +27,10 @@ const RoomSchema = mongoose.Schema(
       type: [String],
       default: [],
     },
+    updatedAt: {
+      type: Date,
+      default: Date.now(),
+    },
   },
   {
     toJSON: { virtuals: true },

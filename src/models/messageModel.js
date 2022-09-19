@@ -14,11 +14,8 @@ const MessageSchema = mongoose.Schema(
       type: String,
     },
     sender: {
-      type: {
-        id: String,
-        userName: String,
-        avatar: String,
-      },
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
       require: [true, "The message must have belonged to a user"],
     },
     sendedAt: {
