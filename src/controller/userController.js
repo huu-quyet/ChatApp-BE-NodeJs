@@ -1,6 +1,7 @@
 const User = require("../models/userModel");
 const Rooms = require("../models/roomModel");
 const catchAsync = require("../utils/catchAsync");
+const formatTex = require("../utils/functions");
 
 exports.getAllFriends = catchAsync(async (req, res, next) => {
   const friends = await User.find({ $and: [{ _id: { $ne: req.user.id } }, { _id: req.user.friends }] }).select(
@@ -99,7 +100,7 @@ exports.searchRooms = catchAsync(async (req, res, next) => {
   if (rooms) {
     sortRooms = rooms?.filter((item) =>
       item?.userId?.find((user) => user._id?.toString() === req.user.id) &&
-      item?.name?.toLowerCase()?.includes(req.params?.search.toLowerCase())
+      formatTex(item?.name)?.includes(formatTex(req.params?.search))
         ? true
         : false
     );
