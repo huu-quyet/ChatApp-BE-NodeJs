@@ -29,7 +29,6 @@ const RoomSchema = mongoose.Schema(
     },
     updatedAt: {
       type: Date,
-      default: Date.now(),
     },
   },
   {
